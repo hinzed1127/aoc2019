@@ -1,7 +1,8 @@
 program = open('input.txt')
 
 # https://stackoverflow.com/questions/18332801/how-to-read-an-array-of-integers-from-single-line-of-input-in-python3
-arr = list(map(int, program.read().split(',')))
+# arr = list(map(int, program.read().split(',')))
+arr = [int(n) for n in open('input.txt').read().split(',')]
 
 arr[1] = 12
 arr[2] = 2
