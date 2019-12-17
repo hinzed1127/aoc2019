@@ -25,6 +25,7 @@ def never_decreasing(digits):
     return True
 
 
+# this is essentially implementing a list version of collections.Counter()
 def valid_adjacents(digits):
     repetitions = []
     curr_rep = 1
