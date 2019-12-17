@@ -18,7 +18,7 @@ def wire_coords(wire_path):
 # add all coordinates in path to a list
 def append_coords(coords, direction, magnitude):
 
-    for i in range(magnitude):
+    for _ in range(magnitude):
         x, y = coords[len(coords) - 1]
         if direction == 'U':
             coords.append((x, y + 1))
@@ -44,7 +44,7 @@ def shortestManhattanDistance(intersections):
         elif (distance < shortest):
             shortest = distance
 
-    print(shortest)
+    return shortest
 
 
 def fewestCombinedSteps(path1, path2, intersections):
@@ -60,7 +60,7 @@ def fewestCombinedSteps(path1, path2, intersections):
         elif (steps < fewestSteps):
             fewestSteps = steps
 
-    print(fewestSteps)
+    return fewestSteps
 
 
 wire_a = wire_coords(wires[0].strip().split(','))
@@ -68,7 +68,9 @@ wire_b = wire_coords(wires[1].strip().split(','))
 intersections = set(wire_a).intersection(set(wire_b))
 
 # part 1
-shortestManhattanDistance(intersections)
+shortestManhattan = shortestManhattanDistance(intersections)
+print('Part 1: ', shortestManhattan)
 
 # part 2
-fewestCombinedSteps(wire_a, wire_b, intersections)
+fewestSteps = fewestCombinedSteps(wire_a, wire_b, intersections)
+print('Part 2: ', fewestSteps)
