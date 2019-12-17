@@ -7,17 +7,18 @@
 
 # print(fuel)
 
-#part one
+# part one
 print(sum((int(line) // 3) - 2 for line in open('masses.txt')))
 
 
 # part 2
 
 def fuel(mass):
-	fuel_mass = (mass // 3) - 2
-	if fuel_mass <= 0:
-		return 0
-	else:
-		return fuel_mass + fuel(fuel_mass)
+    fuel_mass = (mass // 3) - 2
+    if fuel_mass <= 0:
+        return 0
+    else:
+        return fuel_mass + fuel(fuel_mass)
+
 
 print(sum(fuel(line) for line in open('masses.txt')))
