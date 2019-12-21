@@ -16,10 +16,14 @@ def execute(mem, noun, verb):
     mem[1] = noun
     mem[2] = verb
 
-    while mem[i] != 99:
-        if mem[i] == 1:
+    END = 99
+    ADD = 1
+    MULTIPLY = 2
+
+    while mem[i] != END:
+        if mem[i] == ADD:
             add(mem, mem[i+1], mem[i+2], mem[i+3])
-        elif mem[i] == 2:
+        elif mem[i] == MULTIPLY:
             multiply(mem, mem[i+1], mem[i+2], mem[i+3])
         else:
             print('Not 1 or 2, something went wrong')

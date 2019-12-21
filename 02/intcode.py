@@ -20,11 +20,14 @@ def multiply(x, y, output):
 
 
 i = 0
+END = 99
+ADD = 1
+MULTIPLY = 2
 
-while arr[i] != 99:
-    if arr[i] == 1:
+while arr[i] != END:
+    if arr[i] == ADD:
         add(arr[i+1], arr[i+2], arr[i+3])
-    elif arr[i] == 2:
+    elif arr[i] == MULTIPLY:
         multiply(arr[i+1], arr[i+2], arr[i+3])
     else:
         print('Not 1 or 2, something went wrong')
