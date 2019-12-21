@@ -1,6 +1,5 @@
 program = open('input.txt')
 arr = list(map(int, program.read().split(',')))
-# arr = program.read().split(',')
 
 # After providing 1 to the only input instruction...
 inputs = [5]
@@ -20,65 +19,7 @@ def parse_instructions(number):
     commands.append(0)
     return commands
 
-# def parse_instructions2(number):
-#     digits = list(str(number))[::-1]
-#     while len(digits)
-
 def execute(mem):
-    def add(instructions, i):
-        x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
-        y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
-
-        mem[mem[i+3]] = x + y
-
-    def multiply(instructions, i):
-        x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
-        y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
-
-        mem[mem[i+3]] = x * y
-
-    def output(instructions, i):
-        if instructions[0] == POSITION:
-            print(mem[mem[i+1]])
-        else:
-            print(mem[i+1])
-
-    def jump_if_true(instructions, i):
-        x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
-        y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
-
-        if x != 0:
-            return y
-        else:
-            return i+3
-
-    def jump_if_false(instructions, i):
-        x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
-        y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
-
-        if x == 0:
-            return y
-        else:
-            return i+3
-
-    def less_than(instructions, i):
-        x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
-        y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
-
-        if x < y:
-            mem[mem[i+3]] = 1
-        else:
-            mem[mem[i+3]] = 0
-
-    def equals(instructions, i):
-        x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
-        y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
-
-        if x == y:
-            mem[mem[i+3]] = 1
-        else:
-            mem[mem[i+3]] = 0
-
     # MODES
     POSITION = 0
     IMMEDIATE = 1
@@ -98,34 +39,53 @@ def execute(mem):
 
     while mem[i] != END:
         instructions = parse_instructions(mem[i])
-        command = instructions[0]
+        command = instructions.pop(0)
+
+        x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
+
+        # add check to avoid index failure on OUTPUT command
+        if command != OUTPUT:
+            y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
 
         if command == ADD:
-            add(instructions[1:], i)
+            mem[mem[i+3]] = x + y
             i += 4
         elif command == MULTIPLY:
-            multiply(instructions[1:], i)
+            mem[mem[i+3]] = x * y
             i += 4
         elif command == INPUT:
             # take the next input item, add it to position i+1
             mem[mem[i+1]] = inputs.pop(0)
             i += 2
         elif command == OUTPUT:
-            output(instructions[1:], i)
+            print(x)
             i += 2
         elif command == JUMP_IF_TRUE:
-            i = jump_if_true(instructions[1:], i)
+            if x != 0:
+                i = y
+            else:
+                i += 3
         elif command == JUMP_IF_FALSE:
-            i = jump_if_false(instructions[1:], i)
+            if x == 0:
+                i = y
+            else:
+                i += 3
         elif command == LESS_THAN:
-            less_than(instructions[1:], i)
+            if x < y:
+                mem[mem[i+3]] = 1
+            else:
+                mem[mem[i+3]] = 0
             i += 4
         elif command == EQUALS:
-            equals(instructions[1:], i)
+            if x == y:
+                mem[mem[i+3]] = 1
+            else:
+                mem[mem[i+3]] = 0
             i += 4
         else:
-            print('You gave %s, not valid input' % (mem[i]))
-
+            print('You gave %s, not valid input' % (instructions[0]))
+            return
+        
 
 
 if __name__ == '__main__':
