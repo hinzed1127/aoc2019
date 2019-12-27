@@ -1,8 +1,7 @@
+import copy
+
 program = open('input.txt')
 arr = list(map(int, program.read().split(',')))
-
-# After providing 1 to the only input instruction...
-inputs = [5]
 
 # separate an instruction into a sequential list of opscode followed by parameter mode
 def parse_instructions(number):
@@ -14,15 +13,16 @@ def parse_instructions(number):
         commands.append(number % 10)
         number //= 10
     
-    # TODO figure out more elegant way to add zeros
-    commands.append(0)
-    commands.append(0)
+    # Tack on extra zeros for commands with less than 2 inputs
+    while len(commands) < 3:
+        commands.append(0)
+    
     return commands
 
-def execute(mem):
+def execute(mem, inputs):
     # MODES
     POSITION = 0
-    IMMEDIATE = 1
+    # IMMEDIATE = 1
 
     # OPERATIONS
     ADD = 1
@@ -89,4 +89,7 @@ def execute(mem):
 
 
 if __name__ == '__main__':
-    execute(arr)
+    # # pt 1
+    execute(copy.deepcopy(arr), [1])
+    # # pt 2
+    execute(copy.deepcopy(arr), [5])
