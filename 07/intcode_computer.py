@@ -19,7 +19,7 @@ def parse_instructions(number):
     
     return commands
 
-def execute(mem, inputs, startIndex=0):
+def execute(mem, inputs, startIndex=0, feedback=False):
     # MODES
     POSITION = 0
     # IMMEDIATE = 1
@@ -53,8 +53,10 @@ def execute(mem, inputs, startIndex=0):
             output_instruction = mem[mem[i+1]]
             # print(output_instruction)
             i += 2
-            return (mem, i, output_instruction)
-            # continue
+            if feedback:
+                return (mem, i, output_instruction)
+            else:
+                continue
 
         x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
         y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
@@ -94,12 +96,6 @@ def execute(mem, inputs, startIndex=0):
     return output_instruction
         
 def phase_combinations(phase_settings=[]):
-    # pt 1
-    # phase_settings = [0, 1, 2, 3, 4]
-    # ---------------------------------
-    # pt 2
-    # phase_settings = [5, 6, 7, 8, 9]
-
     # different syntax, same result
     # combos = [x for x in itertools.permutations(list(range(5)), 5)]
     combos = list(itertools.permutations(phase_settings, len(phase_settings)))
@@ -126,7 +122,7 @@ def feedback_loop(mem, phase_sequence):
     outputs = []
     while True:
         # if it's not E at the halt code, execute returns (mem, i, output_instruction)
-        result = execute(amplifier_series[i], inputs, amplifier_current_indices[i])
+        result = execute(amplifier_series[i], inputs, amplifier_current_indices[i], True)
 
         if type(result) == tuple:
             amplifier_series[i], amplifier_current_indices[i], input_signal = result
@@ -160,7 +156,7 @@ if __name__ == '__main__':
 
 
     # part 1
-    # find_largest_sequence_output(mem, feedback_loop, phase_combinations(list(range(5))))
+    find_largest_sequence_output(mem, amplification_circuit, phase_combinations(list(range(5))))
 
     # part 2
     find_largest_sequence_output(mem, feedback_loop, phase_combinations(list(range(5, 10))))
