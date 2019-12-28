@@ -14,14 +14,14 @@ class KnownValues(unittest.TestCase):
         ('test_signal_18216.txt', [9,7,8,5,6], 18216)
     )
 
-    # def test_amplification_circuit(self):
-    #     '''amplication_circuit should give known result with known input'''
-    #     for file, phase_sequence, output_signal in self.known_values:
-    #         intcode_program = open(expanduser('~/code/aoc2019/07/%s' % file))
-    #         mem = list(map(int, intcode_program.read().split(',')))
+    def test_amplification_circuit(self):
+        '''amplication_circuit should give known result with known input'''
+        for file, phase_sequence, output_signal in self.known_values:
+            intcode_program = open(expanduser('~/code/aoc2019/07/%s' % file))
+            mem = list(map(int, intcode_program.read().split(',')))
 
-    #         result = intcode_computer.amplification_circuit(mem, phase_sequence)
-    #         self.assertEqual(output_signal, result)
+            result = intcode_computer.amplification_circuit(mem, phase_sequence)
+            self.assertEqual(output_signal, result)
 
     def test_feedback_loop(self):
         '''feedback_loop should give known result with known input'''
@@ -29,7 +29,7 @@ class KnownValues(unittest.TestCase):
             intcode_program = open(expanduser('~/code/aoc2019/07/%s' % file))
             mem = list(map(int, intcode_program.read().split(',')))
 
-            result = intcode_computer.amplification_circuit(mem, phase_sequence)
+            result = intcode_computer.feedback_loop(mem, phase_sequence)
             self.assertEqual(output_signal, result)
 
 if __name__ == '__main__':

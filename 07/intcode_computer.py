@@ -19,7 +19,7 @@ def parse_instructions(number):
     
     return commands
 
-def execute(mem, inputs):
+def execute(mem, inputs, startIndex=0):
     # MODES
     POSITION = 0
     # IMMEDIATE = 1
@@ -35,12 +35,12 @@ def execute(mem, inputs):
     EQUALS = 8
     END = 99
 
-    i = 0
+    i = startIndex
     output_instruction = None
 
     while mem[i] != END:
         instructions = parse_instructions(mem[i])
-        print(i, mem[i], instructions)
+        # print(i, mem[i], instructions)
         command = instructions.pop(0)
 
         # handle INPUT and OUTPUT separately, as they are always in POSITION mode only
@@ -53,7 +53,8 @@ def execute(mem, inputs):
             output_instruction = mem[mem[i+1]]
             # print(output_instruction)
             i += 2
-            continue
+            return (mem, i, output_instruction)
+            # continue
 
         x = mem[mem[i+1]] if instructions[0] == POSITION else mem[i+1]
         y = mem[mem[i+2]] if instructions[1] == POSITION else mem[i+2]
@@ -92,13 +93,16 @@ def execute(mem, inputs):
     
     return output_instruction
         
-def phase_combinations():
-    phase_settings = [0, 1, 2, 3, 4]
+def phase_combinations(phase_settings=[]):
+    # pt 1
+    # phase_settings = [0, 1, 2, 3, 4]
+    # ---------------------------------
+    # pt 2
     # phase_settings = [5, 6, 7, 8, 9]
 
     # different syntax, same result
     # combos = [x for x in itertools.permutations(list(range(5)), 5)]
-    combos = list(itertools.permutations(phase_settings, 5))
+    combos = list(itertools.permutations(phase_settings, len(phase_settings)))
     
     return combos
 
@@ -112,26 +116,52 @@ def amplification_circuit(mem, phase_sequence):
     return input_signal
 
 def feedback_loop(mem, phase_sequence):
-    input_signal = 0
+    amplifier_series = [copy.deepcopy(mem) for _ in range(5)]
+    amplifier_current_indices = [0] * 5
+    i = 0 
 
+    # Provide each amplifier its phase setting at its first input instruction;
+    # all further input/output instructions are for signals.
+    inputs = [phase_sequence.pop(0), 0]
+    outputs = []
+    while True:
+        # if it's not E at the halt code, execute returns (mem, i, output_instruction)
+        result = execute(amplifier_series[i], inputs, amplifier_current_indices[i])
 
-    # the final value of input_signal is the ultimate output
-    return input_signal
+        if type(result) == tuple:
+            amplifier_series[i], amplifier_current_indices[i], input_signal = result
 
-if __name__ == '__main__':
-    # program = open(expanduser('~/code/aoc2019/07/test_signal_139629729.txt'))
-    program = open(expanduser('~/code/aoc2019/07/input.txt'))
-    mem = list(map(int, program.read().split(',')))
+            if len(phase_sequence) > 0:
+                inputs.insert(0, phase_sequence.pop(0))
+        
+            inputs.append(input_signal)
+            # collect outputs for the final result
+            outputs.append(input_signal)
+        else:
+            # halt sequence returns None or final output value, not a tuple
+            return outputs[len(outputs)-1]
 
-    phase_setting_combinations = phase_combinations()
-    # phase_setting_combinations = [(9, 8, 7, 6, 5)]
-    
+        i = (i+1) % 5
+
+def find_largest_sequence_output(mem, program, phase_sequence_combinations):
     largest_output_signal = 0
 
-    for phase_sequence in phase_setting_combinations:
-        output_signal = amplification_circuit(copy.deepcopy(mem), phase_sequence)
+    for phase_sequence in phase_sequence_combinations:
+        output_signal = program(copy.deepcopy(mem), list(phase_sequence))
         if output_signal > largest_output_signal:
             largest_output_signal = output_signal
         
     print(largest_output_signal)
+    
+
+if __name__ == '__main__':
+    program = open(expanduser('~/code/aoc2019/07/input.txt'))
+    mem = list(map(int, program.read().split(',')))
+
+
+    # part 1
+    # find_largest_sequence_output(mem, feedback_loop, phase_combinations(list(range(5))))
+
+    # part 2
+    find_largest_sequence_output(mem, feedback_loop, phase_combinations(list(range(5, 10))))
         
